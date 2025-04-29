@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - BEKFURR_INSTA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center text-2xl font-bold">Dashboard</h2>
+    </div>
+    <div class="card-body">
+        <div class="text-center">
+            <h3 class="text-xl font-semibold">Xush kelibsiz, {{ user.username }}!</h3>
+            <p class="text-lg">Siz BEKFURR_INSTA tizimiga muvaffaqiyatli kirdingiz</p>
+            {% if user.faceprofile.avatar %}
+            <img src="{{ user.faceprofile.avatar.url }}" alt="Avatar" class="profile-avatar rounded-circle mx-auto mt-4">
+            {% endif %}
+            <div class="mt-4">
+                <h4 class="text-lg font-semibold">Account haqida</h4>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Huquq:</strong> {% if user.is_superuser %}Admin{% else %}Foydalanuvchi{% endif %}</p>
+                <p><strong>Oxirgi kirish:</strong> {{ user.last_login }}</p>
+                <p><strong>Ro‘yxatdan o‘tgan:</strong> {{ user.date_joined }}</p>
+                <p class="mt-2">Bizning GitHub: <a href="https://github.com/bekfurr" class="btn btn-danger">GitHub</a></p>
+            </div>
+            <div class="mt-4 flex justify-center gap-4">
+                <a href="{% url 'create_post' %}" class="btn btn-primary">Yangi Post</a>
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">Profilni Tahrirlash</a>
+                {% if user.is_superuser %}
+                    <a href="{% url 'manage_users' %}" class="btn btn-warning">Foydalanuvchilarni Boshqarish</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn btn-danger">Chiqish</a>
+            </div>
+            <div class="mt-6">
+                <h4 class="text-xl font-semibold mb-4">Sizning Postlaringiz</h4>
+                {% for post in posts %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            {% if post.user.faceprofile.avatar %}
+                                <img src="{{ post.user.faceprofile.avatar.url }}" alt="Avatar" class="post-user-avatar rounded-circle me-2">
+                            {% endif %}
+                            <p class="fw-semibold">{{ post.user.username }}</p>
+                        </div>
+                        <p>{{ post.content }}</p>
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="Post Image" class="zoom-image post-image mt-2">
+                        {% endif %}
+                        <p class="text-muted small mt-2">Ko‘rishlar: {{ post.views }} | {{ post.created_at }}</p>
+                        <div class="mt-2">
+                            <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary">Tahrirlash</a>
+                            <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-outline-danger">O‘chirish</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">Hozircha postlar yo‘q</p>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

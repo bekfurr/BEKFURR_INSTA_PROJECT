@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilni Tahrirlash - BEKFURR_INSTA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center fs-2 fw-bold">Profilni Tahrirlash</h2>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control rounded" id="username" name="username" value="{{ user.username }}">
+            </div>
+            <div class="mb-3">
+                <label for="avatar" class="form-label">Yangi Avatar</label>
+                <input type="file" class="form-control rounded" id="avatar" name="avatar" accept="image/*">
+                {% if user.faceprofile.avatar %}
+                    <img src="{{ user.faceprofile.avatar.url }}" alt="Current Avatar" class="rounded-circle mt-2" width="100" height="100">
+                {% endif %}
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary rounded">Saqlash</button>
+            </div>
+        </form>
+        <div class="mt-4 text-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded">Orqaga</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

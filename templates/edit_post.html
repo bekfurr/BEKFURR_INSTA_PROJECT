@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Postni Tahrirlash - BEKFURR_INSTA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center fs-2 fw-bold">Postni Tahrirlash</h2>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="content" class="form-label">Post Mazmuni</label>
+                <textarea class="form-control rounded" id="content" name="content" rows="5" required>{{ post.content }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Rasm (ixtiyoriy)</label>
+                <input type="file" class="form-control rounded" id="image" name="image" accept="image/*">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="Current Image" class="img-fluid rounded mt-2" style="max-width: 500px;">
+                {% endif %}
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary rounded">Saqlash</button>
+            </div>
+        </form>
+        <div class="mt-4 text-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded">Orqaga</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

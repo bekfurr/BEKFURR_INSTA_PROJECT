@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BEKFURR_INSTA{% endblock %}</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold fs-3" href="{% url 'home' %}">BEKFURR_INSTA</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Bosh sahifa</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                        </li>
+                        {% if user.is_superuser %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'manage_users' %}">Foydalanuvchilarni boshqarish</a>
+                            </li>
+                        {% endif %}
+                        <!-- Foydalanuvchi ikonasi va nomi -->
+                        <li class="nav-item d-flex align-items-center">
+                            {% if user.faceprofile.avatar %}
+                                <img src="{{ user.faceprofile.avatar.url }}" alt="Avatar" class="rounded-circle me-2" width="30" height="30">
+                            {% else %}
+                                <span class="rounded-circle me-2 user-icon">👤</span>
+                            {% endif %}
+                            <span class="nav-link fw-semibold">{{ user.username }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Chiqish</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Kirish</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Ro‘yxatdan o‘tish</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} rounded">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>© BEKFURR INC 2025</p>
+        <p>Ro‘yxatdan o‘tgan foydalanuvchilar: {{ total_users }} | Jami postlar: {{ total_posts }}</p>
+    </footer>
+
+    <div id="zoomModal">
+        <img id="zoomedImage" src="" alt="Zoomed Image">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Zoom effekti
+        document.querySelectorAll('.zoom-image').forEach(img => {
+            img.addEventListener('click', () => {
+                const modal = document.getElementById('zoomModal');
+                const zoomedImage = document.getElementById('zoomedImage');
+                zoomedImage.src = img.src;
+                modal.style.display = 'flex';
+            });
+        });
+
+        document.getElementById('zoomModal').addEventListener('click', () => {
+            document.getElementById('zoomModal').style.display = 'none';
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

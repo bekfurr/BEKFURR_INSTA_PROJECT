@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Foydalanuvchilarni Boshqarish - BEKFURR_INSTA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center fs-2 fw-bold">Foydalanuvchilarni Boshqarish</h2>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Huquq</th>
+                    <th>Harakatlar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{% if user.is_superuser %}Admin{% else %}Foydalanuvchi{% endif %}</td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="action" value="edit">
+                                <input type="text" name="new_username" placeholder="Yangi username" class="form-control d-inline w-auto">
+                                <button type="submit" class="btn btn-sm btn-primary rounded">Tahrirlash</button>
+                            </form>
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn btn-sm btn-danger rounded">O‘chirish</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="mt-4 text-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary rounded">Orqaga</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

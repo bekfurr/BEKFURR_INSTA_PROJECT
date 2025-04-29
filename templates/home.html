@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Bosh sahifa - BEKFURR_INSTA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center fs-2 fw-bold">BEKFURR_INSTA GA XUSH KELIBSIZ</h2>
+    </div>
+    <div class="card-body">
+        <div class="text-center mb-5">
+            <p class="fs-5">XAVFSIZ KIRISH UCHUN YUZ MA’LUMOTLARI YOKI LOGIN VA PAROLDAN FOYDALANING</p>
+            {% if user.is_authenticated %}
+                <p>Siz <strong>{{ user.username }}</strong> sifatida tizimga kirdingiz</p>
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">Dashboardga o‘tish</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-secondary">Chiqish</a>
+            {% else %}
+                <p>TIZIMGA KIRISH YOKI RO‘YXATDAN O‘TISHNI TANLANG</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Kirish</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-secondary">Ro‘yxatdan o‘tish</a>
+            {% endif %}
+        </div>
+        <div class="mt-5">
+            <h4 class="fs-4 fw-semibold mb-4">Barcha Postlar</h4>
+            {% for post in posts %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            {% if post.user.faceprofile.avatar %}
+                             <img src="{{ post.user.faceprofile.avatar.url }}" alt="Avatar" class="post-user-avatar rounded-circle me-2">
+                            {% endif %}
+                            <p class="fw-semibold">{{ post.user.username }}</p>
+                        </div>
+                        <p>{{ post.content }}</p>
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post Image" class="zoom-image post-image mt-2">
+                        {% endif %}
+                        <p class="text-muted small mt-2">Ko‘rishlar: {{ post.views }} | {{ post.created_at }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">Hozircha postlar yo‘q</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

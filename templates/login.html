@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Kirish - BEKFURR_INSTA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center fs-2 fw-bold">Kirish</h2>
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs mb-4" id="loginTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="password-tab" data-bs-toggle="tab" data-bs-target="#password-pane" type="button" role="tab">Parol bilan kirish</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="face-tab" data-bs-toggle="tab" data-bs-target="#face-pane" type="button" role="tab">Yuz bilan kirish</button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="loginTabContent">
+            <div class="tab-pane fade show active" id="password-pane" role="tabpanel">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="login_method" value="password">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control rounded" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Parol</label>
+                        <input type="password" class="form-control rounded" id="password" name="password" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary rounded">Kirish</button>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="face-pane" role="tabpanel">
+                <form method="post" action="{% url 'login' %}" id="faceLoginForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="login_method" value="face">
+                    <div class="mb-3">
+                        <label for="username_face" class="form-label">Username</label>
+                        <input type="text" class="form-control rounded" id="username_face" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yuzni tasdiqlash</label>
+                        <div class="webcam-container">
+                            <video id="webcam" autoplay playsinline class="rounded"></video>
+                            <canvas id="canvas" class="hidden"></canvas>
+                            <input type="hidden" id="face_image" name="face_image">
+                        </div>
+                        <div class="d-grid gap-2 mt-2">
+                            <button type="button" id="captureBtn" class="btn btn-secondary rounded">Suratga Olish</button>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary rounded" id="faceLoginBtn" disabled>Yuz bilan kirish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="mt-4 text-center">
+            <p>Account yo‘qmi? <a href="{% url 'register' %}" class="text-primary">Ro‘yxatdan o‘tish</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const faceImageInput = document.getElementById('face_image');
+    const faceLoginBtn = document.getElementById('faceLoginBtn');
+    const faceTab = document.getElementById('face-tab');
+    
+    let stream = null;
+    
+    faceTab.addEventListener('click', startWebcam);
+    
+    async function startWebcam() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+            });
+            webcamElement.srcObject = stream;
+        } catch (err) {
+            console.error("Error accessing webcam:", err);
+            alert("Kameraga kirishda xatolik. Iltimos, kamerangiz ulanganligini va ruxsat berilganligini tekshiring.");
+        }
+    }
+    
+    function stopWebcam() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    }
+    
+    captureBtn.addEventListener('click', function() {
+        canvasElement.width = webcamElement.videoWidth;
+        canvasElement.height = webcamElement.videoHeight;
+        canvasElement.getContext('2d').drawImage(webcamElement, 0, 0);
+        
+        const imageData = canvasElement.toDataURL('image/jpeg');
+        faceImageInput.value = imageData;
+        
+        faceLoginBtn.disabled = false;
+        
+        captureBtn.textContent = 'Yuz Suratga Olindi ✓';
+        captureBtn.classList.remove('btn-secondary');
+        captureBtn.classList.add('btn-success');
+    });
+    
+    window.addEventListener('beforeunload', stopWebcam);
+</script>
+{% endblock %}

@@ -1,0 +1,159 @@
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 900px;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.card-header {
+    background: linear-gradient(to right, #6b7280, #4b5563);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+}
+
+.navbar {
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 1rem;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+.nav-link:hover {
+    color: #6366f1;
+}
+
+/* Foydalanuvchi ikonasi uchun stillar (header’da) */
+.user-icon, .navbar img.rounded-circle {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: #e5e7eb;
+    border-radius: 50%;
+    font-size: 0.9rem;
+}
+
+/* Dashboard’dagi profil avatar o‘lchami */
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+}
+
+/* Post rasmlari uchun */
+.post-image {
+    max-width: 300px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+/* Postlarda foydalanuvchi avatarlari */
+.post-user-avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+}
+
+/* Zoom effekti */
+.zoom-image:hover {
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    background: #6366f1;
+    border: none;
+    transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+.webcam-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#webcam, #canvas {
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+}
+
+.hidden {
+    display: none;
+}
+
+#zoomModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#zoomModal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+}
+
+footer {
+    margin-top: auto;
+    background: #1f2937;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Kichik ekranlar uchun moslashuvchanlik */
+@media (max-width: 768px) {
+    .post-image {
+        max-width: 100%;
+    }
+
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .profile-avatar {
+        width: 50px;
+        height: 50px;
+    }
+}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Ro‘yxatdan o‘tish - BEKFURR_INSTA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="text-center fs-2 fw-bold">Ro‘yxatdan o‘tish</h2>
+    </div>
+    <div class="card-body">
+        <form method="post" id="registerForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control rounded" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Parol</label>
+                <input type="password" class="form-control rounded" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="avatar" class="form-label">Avatar (ixtiyoriy)</label>
+                <input type="file" class="form-control rounded" id="avatar" name="avatar" accept="image/*">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Yuzni suratga olish</label>
+                <div class="webcam-container">
+                    <video id="webcam" autoplay playsinline class="rounded"></video>
+                    <canvas id="canvas" class="hidden"></canvas>
+                    <input type="hidden" id="face_image" name="face_image">
+                </div>
+                <div class="d-grid gap-2 mt-2">
+                    <button type="button" id="captureBtn" class="btn btn-secondary rounded">Suratga Olish</button>
+                    <div id="captureStatus" class="alert alert-info hidden mt-2 rounded">
+                        Yuz suratga olinmoqda...
+                    </div>
+                </div>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary rounded" id="registerBtn" disabled>Ro‘yxatdan o‘tish</button>
+            </div>
+            <div class="mt-4 text-center">
+                <p>Account bormi? <a href="{% url 'login' %}" class="text-primary">Kirish</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const captureStatus = document.getElementById('captureStatus');
+    const faceImageInput = document.getElementById('face_image');
+    const registerBtn = document.getElementById('registerBtn');
+    
+    let stream = null;
+    
+    async function startWebcam() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+            });
+            webcamElement.srcObject = stream;
+        } catch (err) {
+            console.error("Error accessing webcam:", err);
+            alert("Kameraga kirishda xatolik. Iltimos, kamerangiz ulanganligini va ruxsat berilganligini tekshiring.");
+        }
+    }
+    
+    function stopWebcam() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    }
+    
+    captureBtn.addEventListener('click', function() {
+        canvasElement.classList.remove('hidden');
+        webcamElement.classList.add('hidden');
+        captureStatus.classList.remove('hidden');
+        
+        canvasElement.width = webcamElement.videoWidth;
+        canvasElement.height = webcamElement.videoHeight;
+        canvasElement.getContext('2d').drawImage(webcamElement, 0, 0);
+        
+        const imageData = canvasElement.toDataURL('image/jpeg');
+        faceImageInput.value = imageData;
+        
+        fetch('/api/capture-face/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({ image_data: imageData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            captureStatus.classList.add('hidden');
+            if (data.success) {
+                captureBtn.textContent = 'Yuz Suratga Olindi ✓';
+                captureBtn.classList.remove('btn-secondary');
+                captureBtn.classList.add('btn-success');
+                registerBtn.disabled = false;
+            } else {
+                alert('Yuz aniqlanmadi. Iltimos, qaytadan urinib ko‘ring.');
+                canvasElement.classList.add('hidden');
+                webcamElement.classList.remove('hidden');
+                captureBtn.textContent = 'Suratga Olish';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Yuzni suratga olishda xatolik. Iltimos, qaytadan urinib ko‘ring.');
+            captureStatus.classList.add('hidden');
+            canvasElement.classList.add('hidden');
+            webcamElement.classList.remove('hidden');
+        });
+    });
+    
+    document.addEventListener('DOMContentLoaded', startWebcam);
+    window.addEventListener('beforeunload', stopWebcam);
+</script>
+{% endblock %}
