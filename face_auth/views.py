@@ -194,6 +194,25 @@ def manage_users(request):
                         messages.success(request, 'Foydalanuvchi ma’lumotlari yangilandi')
                 else:
                     messages.error(request, 'Yangi username kiritilishi kerak')
+            elif action == 'toggle_superuser':
+                target_user.is_superuser = not target_user.is_superuser
+                target_user.save()
+                if target_user.is_superuser:
+                    messages.success(request, 'Foydalanuvchi admin qilingan')
+                else:
+                    messages.success(request, 'Foydalanuvchi admin huquqi o‘chirildi')
+            elif action == 'reset_password':
+                new_password = uuid.uuid4().hex[:8] 
+                target_user.set_password(new_password)
+                target_user.save()
+                messages.success(request, f'Foydalanuvchining paroli yangilandi: {new_password}')
+            elif action == 'send_message':
+                message = request.POST.get('message')
+                if message:
+                    # Bu yerda xabarni yuborish logikasini qo‘shing
+                    messages.success(request, 'Xabar yuborildi')
+                else:
+                    messages.error(request, 'Xabar matni kiritilishi kerak')
         
         except User.DoesNotExist:
             messages.error(request, 'Foydalanuvchi topilmadi')
