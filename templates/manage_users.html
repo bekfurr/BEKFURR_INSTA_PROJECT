@@ -36,6 +36,40 @@
                                 <button type="submit" class="btn btn-sm btn-danger rounded">O‘chirish</button>
                             </form>
                         </td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="action" value="toggle_superuser">
+                                <button type="submit" class="btn btn-sm {% if user.is_superuser %}btn-danger{% else %}btn-success{% endif %} rounded">
+                                    {% if user.is_superuser %}Admindan oddiy foydalanuvchiga o‘tkazish{% else %}Admin qilish{% endif %}
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="action" value="reset_password">
+                               
+                                <input type="password" name="old_password" placeholder="Avvalgi parol" class="form-control d-inline w-auto">
+                                <input type="password" name="new_password" placeholder="Yangi parol" class="form-control d-inline w-auto">
+                                <input type="password" name="confirm_password" placeholder="Yana yangi parol" class="form-control d-inline w-auto">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="action" value="reset_password">
+                                <button type="submit" class="btn btn-sm btn-warning rounded">Parolni o'zgartirish</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="action" value="send_message">
+                                <input type="text" name="message" placeholder="Xabar" class="form-control d-inline w-auto">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="action" value="send_message">
+                                <button type="submit" class="btn btn-sm btn-info rounded">Xabar yuborish</button>
+                            </form>
                     </tr>
                 {% endfor %}
             </tbody>
