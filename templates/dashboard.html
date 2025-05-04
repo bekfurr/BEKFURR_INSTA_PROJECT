@@ -29,6 +29,11 @@
                     <a href="{% url 'manage_users' %}" class="btn btn-warning">Foydalanuvchilarni Boshqarish</a>
                 {% endif %}
                 <a href="{% url 'logout' %}" class="btn btn-danger">Chiqish</a>
+            
+
+                
+       
+           
             </div>
             <div class="mt-6">
                 <h4 class="text-xl font-semibold mb-4">Sizning Postlaringiz</h4>
@@ -52,6 +57,7 @@
                         </div>
                     </div>
                 </div>
+             
             {% empty %}
                 <p class="text-muted">Hozircha postlar yo‘q</p>
             {% endfor %}
